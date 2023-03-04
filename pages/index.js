@@ -6,6 +6,7 @@ import Card from '@/src/components/Card/Card'
 import coffeeStoresData from "../data/coffee-stores.json"
 import { FetchCoffeeStores } from '@/lib/coffe-stores'
 import useTrackLocation from '@/hooks/useTrackLocation'
+import { useEffect, useState } from 'react'
 
 
 export async function getStaticProps(context) {
@@ -24,7 +25,28 @@ export default function Home({ coffeeStores }) {
 
   const {handleTrackLocation, latLong, locationErrorMsg, isFindingLocation} = useTrackLocation();
 
-  console.log({latLong, locationErrorMsg})
+  const [coffeeStoresToRender, setCoffeeStoresToRender] = useState([])
+
+  useEffect( () => {
+
+    async function setCoffeStoresByLocation() {
+      if(latLong) {
+        try {
+          const fetchedCoffeeeStores = await FetchCoffeeStores(latLong);
+          console.log({fetchedCoffeeeStores})
+          setCoffeeStoresToRender(fetchedCoffeeeStores)
+        }
+        catch(e) {
+          console.log(e)
+        }
+      }
+    }
+
+    setCoffeStoresByLocation();
+
+  }, [latLong])
+
+
 
   function handleOnBannerBtnClick() {
     console.warn("IT WORKS")
@@ -59,10 +81,30 @@ export default function Home({ coffeeStores }) {
             width={700} height={400}
           />
         </div>
+
+        {coffeeStoresToRender.length > 0
+          ?
+          <>
+            <h2 className={styles.heading2}>Stores Near You</h2>
+            <div className={styles.cardLayout}>
+              {
+                coffeeStoresToRender.map(store => (
+                  <Card
+                    key={store.id}
+                    name={store.name}
+                    imgUrl={store.imgUrl}
+                    href={`/coffee-store/${store.id}`} />
+                ))
+              }
+            </div>
+          </>
+          :
+          null}
+
         {coffeeStores.length > 0
           ?
           <>
-            <h2 className={styles.heading2}>Toronto stores</h2>
+            <h2 className={styles.heading2}>San Deigo Stores</h2>
             <div className={styles.cardLayout}>
               {
                 coffeeStores.map(store => (
