@@ -1,6 +1,9 @@
 /** HOME.MODULE.CSS **/
 
 /** Mobile first development **/
+.sectionWrapper {
+  margin-top: 8rem;
+}
 
 .container {
   margin-bottom: 22.4rem /* 224px */;
