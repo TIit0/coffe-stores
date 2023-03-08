@@ -10,7 +10,10 @@ const useTrackLocation = () => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
 
+        /* set info as required foursquare api format and  */
         setLatLong(`${latitude},${longitude}`);
+
+        /* reset load/error sates */
         setLocationErrorMsg("");
         setIsFindingLocation(false);
     };
@@ -41,3 +44,5 @@ const useTrackLocation = () => {
 };
 
 export default useTrackLocation;
+
+

@@ -23,16 +23,21 @@ export async function getStaticProps(context) {
 /* start of component */
 export default function Home({ coffeeStores }) {
 
-  const {handleTrackLocation, latLong, locationErrorMsg, isFindingLocation} = useTrackLocation();
+    /* aquire user location and return coordinates  */
+  const {
+    handleTrackLocation, latLong, locationErrorMsg, isFindingLocation
+  } = useTrackLocation();
 
   const [coffeeStoresToRender, setCoffeeStoresToRender] = useState([])
 
-  useEffect( () => {
 
+
+  useEffect( () => {
+ /* Aquire a list of sotres and images based on users location */
     async function setCoffeStoresByLocation() {
       if(latLong) {
         try {
-          const fetchedCoffeeeStores = await FetchCoffeeStores(latLong);
+          const fetchedCoffeeeStores = await FetchCoffeeStores(latLong, 12);
           console.log({fetchedCoffeeeStores})
           setCoffeeStoresToRender(fetchedCoffeeeStores)
         }
@@ -52,6 +57,7 @@ export default function Home({ coffeeStores }) {
     console.warn("IT WORKS")
     handleTrackLocation();
   }
+
 
   return (
     <div className={styles.sectionWrapper}>
