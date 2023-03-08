@@ -1,5 +1,6 @@
 import '@/styles/globals.css'
-import { createContext } from 'react';
+import { createContext, useReducer } from 'react';
+import { ACTIONS, reducer } from '@/hooks/reducer'
 
 const StoreContext = createContext();
 
@@ -10,8 +11,10 @@ function StoreProvider({ children }) {
     coffeeStores: [],
   };
 
+  const [state, dispatch] = useReducer(reducer, initialState);
+
   return (
-    <StoreContext.Provider value={{ state: initialState }}>
+    <StoreContext.Provider value={{ state, dispatch }}>
       {children}
     </StoreContext.Provider>
   )
