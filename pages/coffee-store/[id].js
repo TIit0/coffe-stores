@@ -8,22 +8,31 @@ import { FetchCoffeeStores } from "@/lib/coffe-stores";
 
 
 /* server side starts */
-export async function getStaticProps(staticProps) {
-    const params = staticProps.params;
-    console.log("THIS IS PARAMS", params)
 
-    const coffeeStores = await FetchCoffeeStores()
+export async function getStaticProps(staticProps) {
+
+    const params = staticProps.params;
+
+    console.log("THIS IS PARAMS", params)
+    console.log("THIS IS Static props", staticProps)
+
+    const coffeeStores = await FetchCoffeeStores();
+    const findCoffeStoreById = coffeeStores.find( 
+        coffeStore => (
+        coffeStore.id.toString() === params.id
+    ));
+
 
     return {
         props: {
-            coffeeStore: coffeeStores.find(coffeStore => (
-                coffeStore.id.toString() === params.id
-            ))
+            coffeeStore: findCoffeStoreById ? findCoffeStoreById : {}
         }
     }
 }
 
 export async function getStaticPaths() {
+
+    /* */
     const coffeeStores = await FetchCoffeeStores();
 
     const paths = coffeeStores.map(store => {
@@ -39,6 +48,8 @@ export async function getStaticPaths() {
 
 /* client side starts*/
 export default function CoffeStore({ coffeeStore }) {
+    console.log(coffeeStore)
+
     /* use router runs on client */
     const router = useRouter()
     const id = useRouter().query.id;
@@ -73,7 +84,7 @@ export default function CoffeStore({ coffeeStore }) {
                     </div>
                     <Image
                         className={styles.storeImage}
-                        src={imgUrl}
+                        src={imgUrl || "https://images.unsplash.com/photo-1504753793650-d4a2b783c15e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80"}
                         width={600} height={360}
                         alt={`Interior of ${name}`} />
 

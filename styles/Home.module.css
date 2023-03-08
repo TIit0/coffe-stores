@@ -24,6 +24,15 @@
   z-index: 1;
 }
 
+.errorMsg {
+  Font-size: 2rem;
+  color: rgb(0, 17, 255);
+  background-color: whitesmoke;
+  display: inline-block;
+  padding: .3rem;
+  border-radius: 1rem;
+}
+
 .cardLayout {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
