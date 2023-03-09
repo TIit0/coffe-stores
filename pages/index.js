@@ -46,7 +46,10 @@ console.log(state)
 
       if (latLong) {
         try {
-          const fetchedCoffeeeStores = await FetchCoffeeStores(latLong, 12);
+          const response = await fetch(
+            `/api/getCoffeeStoresByLocation?latLong=${latLong}&limit=12`
+            );
+            const fetchedCoffeeeStores = await response.json()
           console.log({ fetchedCoffeeeStores, latLong })
           
           dispatch({
@@ -54,7 +57,9 @@ console.log(state)
             payload: {
               coffeeStores: fetchedCoffeeeStores,
             }
-          })
+          });
+          
+          setUserCoffeeStoresError("");
         }
         catch (error) {
           console.log(error);
