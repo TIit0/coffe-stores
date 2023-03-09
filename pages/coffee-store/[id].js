@@ -5,6 +5,9 @@ import coffeeStoreData from "../../data/coffee-stores.json"
 import styles from "../../styles/coffee-store.module.css"
 import Image from "next/image";
 import { FetchCoffeeStores } from "@/lib/coffe-stores";
+import { useContext, useEffect, useState } from "react";
+import { StoreContext } from "@/hooks/store-context";
+import { isEmpty } from "@/utils";
 
 
 /* server side starts */
@@ -25,7 +28,7 @@ export async function getStaticProps(staticProps) {
 
     return {
         props: {
-            coffeeStore: findCoffeStoreById ? findCoffeStoreById : {}
+            initialProps: findCoffeStoreById ? findCoffeStoreById : {}
         }
     }
 }
@@ -47,8 +50,8 @@ export async function getStaticPaths() {
 /* server side ends*/
 
 /* client side starts*/
-export default function CoffeStore({ coffeeStore }) {
-    console.log(coffeeStore)
+export default function CoffeStore({ initialProps }) {
+    console.log(initialProps)
 
     /* use router runs on client */
     const router = useRouter()
@@ -58,6 +61,24 @@ export default function CoffeStore({ coffeeStore }) {
         return <div>Loading...</div>
     }
 
+    const [coffeeStore, setCoffeeStore] = useState(initialProps)
+
+    const {
+        state: { coffeeStores },
+    } = useContext(StoreContext);
+
+    useEffect(() => {
+        if (isEmpty(initialProps)) {
+            if (coffeeStores.length > 0) {
+
+                const findCoffeStoreById = coffeeStores.find( 
+                    coffeStore => (
+                    coffeStore.id.toString() === id
+                ));
+                setCoffeeStore(findCoffeStoreById);
+            }
+        }
+    }, [id])
 
 
     const { name, address, locality, imgUrl } = coffeeStore;

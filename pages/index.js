@@ -6,7 +6,9 @@ import Card from '@/src/components/Card/Card'
 import coffeeStoresData from "../data/coffee-stores.json"
 import { FetchCoffeeStores } from '@/lib/coffe-stores'
 import useTrackLocation from '@/hooks/useTrackLocation'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { StoreContext } from '@/hooks/store-context'
+import { ACTIONS } from '@/hooks/reducer'
 
 
 export async function getStaticProps(context) {
@@ -26,14 +28,17 @@ export default function Home({ coffeeStores }) {
 
   /* aquire user location and return coordinates  */
   const {
-    handleTrackLocation, latLong, locationErrorMsg, isFindingLocation
+    handleTrackLocation, locationErrorMsg, isFindingLocation
   } = useTrackLocation();
   
 
-  const [userCoffeeStores, setUserCoffeeStores] = useState([]);
+  //const [userCoffeeStores, setUserCoffeeStores] = useState([]);
   const [userCoffeeStoresError, setUserCoffeeStoresError] = useState(null);
 
+const { dispatch, state} = useContext(StoreContext);
+const {latLong} = state;
 
+console.log(state)
 
   useEffect(() => {
     /* Aquire a list of sotres and images based on users location */
@@ -43,7 +48,13 @@ export default function Home({ coffeeStores }) {
         try {
           const fetchedCoffeeeStores = await FetchCoffeeStores(latLong, 12);
           console.log({ fetchedCoffeeeStores, latLong })
-          setUserCoffeeStores(fetchedCoffeeeStores)
+          
+          dispatch({
+            type: ACTIONS.SET_COFFEE_STORES,
+            payload: {
+              coffeeStores: fetchedCoffeeeStores,
+            }
+          })
         }
         catch (error) {
           console.log(error);
@@ -119,13 +130,13 @@ export default function Home({ coffeeStores }) {
 
         {/* User aquired coffe stores start */}
 
-        {userCoffeeStores.length > 0
+        {state.coffeeStores.length > 0
           ?
           <>
             <h2 className={styles.heading2}>Stores Near You</h2>
             <div className={styles.cardLayout}>
               {
-                userCoffeeStores.map(store => (
+                state.coffeeStores.map(store => (
                   <Card
                     key={store.id}
                     name={store.name}

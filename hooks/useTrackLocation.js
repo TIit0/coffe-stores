@@ -1,19 +1,29 @@
 
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import { ACTIONS } from './reducer';
+import { StoreContext } from './store-context';
 
 const useTrackLocation = () => {
     const [locationErrorMsg, setLocationErrorMsg] = useState("");
-    const [latLong, setLatLong] = useState("");
-    const [isFindingLocation, setIsFindingLocation] = useState(false)
+    // const [latLong, setLatLong] = useState("");
+    const [isFindingLocation, setIsFindingLocation] = useState(false);
+    const {dispatch} = useContext(StoreContext)
 
     const success = (position) => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
 
-        /* set info as required foursquare api format and  */
-        setLatLong(`${latitude},${longitude}`);
+        /* set info as required by foursquare api format to context */
+        
+        dispatch({
+            type: ACTIONS.SET_LAT_LONG,
+            payload: {
+                latLong: `${latitude},${longitude}`,
+            }
+        });
 
         /* reset load/error sates */
+
         setLocationErrorMsg("");
         setIsFindingLocation(false);
     };
@@ -36,7 +46,7 @@ const useTrackLocation = () => {
     };
 
     return {
-        latLong,
+        //latLong,
         handleTrackLocation,
         locationErrorMsg,
         isFindingLocation
