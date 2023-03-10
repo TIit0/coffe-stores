@@ -13,6 +13,12 @@ import { ACTIONS } from '@/hooks/reducer'
 
 export async function getStaticProps(context) {
 
+  /*
+  do NOT call internal api here or stuff silently explodes. 
+  aka: getCoffeStoresByLocation 
+  Internal apis are not ready on buildtime
+  */
+
   const coffeeStores = await FetchCoffeeStores();
 
   return {
@@ -46,6 +52,8 @@ console.log(state)
 
       if (latLong) {
         try {
+
+          /* internal apis are now ready on client side AFTER build time */
           const response = await fetch(
             `/api/getCoffeeStoresByLocation?latLong=${latLong}&limit=12`
             );
@@ -58,7 +66,7 @@ console.log(state)
               coffeeStores: fetchedCoffeeeStores,
             }
           });
-          
+
           setUserCoffeeStoresError("");
         }
         catch (error) {
