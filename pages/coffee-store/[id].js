@@ -20,10 +20,10 @@ export async function getStaticProps(staticProps) {
     console.log("THIS IS Static props", staticProps)
 
     const coffeeStores = await FetchCoffeeStores();
-    const findCoffeStoreById = coffeeStores.find( 
+    const findCoffeStoreById = coffeeStores.find(
         coffeStore => (
-        coffeStore.id.toString() === params.id
-    ));
+            coffeStore.id.toString() === params.id
+        ));
 
 
     return {
@@ -67,15 +67,51 @@ export default function CoffeStore({ initialProps }) {
         state: { coffeeStores },
     } = useContext(StoreContext);
 
+
+    /* Aquire coffestore info  from context and add to db or get*/
+    async function handleCreateCoffeStore(coffeeStore) {
+
+        try {
+            const { id, name, voting, imgUrl, locality, address } = coffeeStore
+
+            const response = await fetch("/api/createCoffeeStore", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id,
+                    name,
+                    voting: 0,
+                    imgUrl,
+                    locality: locality || "",
+                    address: address || ""
+                }),
+            });
+
+            const dbCoffeeStore = await response.json();
+            console.log(dbCoffeeStore);
+        } catch (error) {
+            console.error("Error creating coffee store", error)
+        }
+
+    }
+
     useEffect(() => {
+
         if (isEmpty(initialProps)) {
             if (coffeeStores.length > 0) {
 
-                const findCoffeStoreById = coffeeStores.find( 
+                const coffeeStoreFromContext = coffeeStores.find(
                     coffeStore => (
-                    coffeStore.id.toString() === id
-                ));
-                setCoffeeStore(findCoffeStoreById);
+                        coffeStore.id.toString() === id
+                    ));
+
+                if (coffeeStoreFromContext) {
+                    setCoffeeStore(coffeeStoreFromContext);
+                    handleCreateCoffeStore(coffeeStoreFromContext)
+                }
+
             }
         }
     }, [id])

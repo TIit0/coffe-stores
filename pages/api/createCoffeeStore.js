@@ -12,7 +12,7 @@ export default async function createCoffeStore(req, res) {
                 /* find a store */
 
                 const findCoffeeStoreRecords = await table.select({
-                    filterByFormula: `id=${id}`
+                    filterByFormula: `id="${id}"`
                 }).firstPage();
 
                 if (findCoffeeStoreRecords.length !== 0) {
