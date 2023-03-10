@@ -46,6 +46,16 @@ const {latLong} = state;
 
 console.log(state)
 
+async function handleCreateCoffeStore() {
+
+  try {
+    const response = await fetch("/api/createCoffeeStore");
+  } catch(error) {
+    console.error("Error creating coffee store", error)
+  }
+
+}
+
   useEffect(() => {
     /* Aquire a list of sotres and images based on users location */
     async function setCoffeStoresByLocation() {
