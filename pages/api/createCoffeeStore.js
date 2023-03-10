@@ -5,19 +5,20 @@ const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process
 
 const table = base('coffe-stores');
 
-console.log({ table })
+
 
 export default async function createCoffeStore(req, res) {
-    console.log({ req })
 
+    if (req.method === "POST") {
 
-    try {
+        /* find a store */
 
-        if (req.method === "POST") {
+        const {id, name, address, locality, voting, imgUrl} = req.body;
 
-            /* find a store */
+        try {
+
             const findCoffeeStoreRecords = await table.select({
-                filterByFormula: `id="0"`
+                filterByFormula: `id=${id}`
             }).firstPage();
 
 
@@ -30,15 +31,32 @@ export default async function createCoffeStore(req, res) {
                 res.json(records);
             } else {
                 /* create/add a store */
-                res.json({ message: "create a store" })
+
+                const createCoffeeStoreRecord = await table.create([
+                    {
+                        fields: {
+                            id,
+                            name,
+                            address,
+                            locality,
+                            voting,
+                            imgUrl,
+                        },
+                    },
+                ]);
+
+                const records = createCoffeeStoreRecord.map(record => {
+                    return { ...record.fields }
+                });
+
+                res.json({ records })
             }
+
+        } catch (err) {
+            console.log(err)
+            res.status(500)
+            res.json({ message: `Something went wrong: ${err}` })
         }
-
-    } catch (err) {
-        console.log(err)
-        res.status(500)
-        res.json({message: `Something went wrong: ${err}`})
     }
-
 
 }
