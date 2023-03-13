@@ -68,7 +68,7 @@ export default function CoffeStore({ initialProps }) {
     } = useContext(StoreContext);
 
 
-    /* Aquire coffestore info  from context and add to db or get*/
+    /* Aquire coffestore info  from context and add to db or get it if it already exists in db*/
     async function handleCreateCoffeStore(coffeeStore) {
 
         try {
@@ -113,15 +113,21 @@ export default function CoffeStore({ initialProps }) {
                 }
 
             }
+        } else {
+            handleCreateCoffeStore(initialProps);
         }
-    }, [id])
+    }, [id, initialProps])
 
 
     const { name, address, locality, imgUrl } = coffeeStore;
     console.log(id)
 
+    const [votingCount, setVotingCount] = useState(1);
+
     function handleUpvote() {
         console.log("HII")
+        let count = votingCount + 1
+        setVotingCount(count);
     }
 
 
@@ -176,7 +182,7 @@ export default function CoffeStore({ initialProps }) {
                             alt="star icon"
                             src="/svg/star.svg"
                             width={24} height={24} />
-                        <p className={styles.text}>{1}</p>
+                        <p className={styles.text}>{votingCount}</p>
                     </div>
                     <button
                         onClick={handleUpvote}
