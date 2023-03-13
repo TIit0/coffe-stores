@@ -4,10 +4,11 @@ import Head from "next/head";
 import coffeeStoreData from "../../data/coffee-stores.json"
 import styles from "../../styles/coffee-store.module.css"
 import Image from "next/image";
+import useSWR from 'swr';
 import { FetchCoffeeStores } from "@/lib/coffe-stores";
 import { useContext, useEffect, useState } from "react";
 import { StoreContext } from "@/hooks/store-context";
-import { isEmpty } from "@/utils";
+import { isEmpty, fetcher } from "@/utils";
 
 
 /* server side starts */
@@ -124,13 +125,25 @@ export default function CoffeStore({ initialProps }) {
 
     const [votingCount, setVotingCount] = useState(1);
 
+    const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher);
+
+    useEffect(() => {
+        if (data && data.length > 0) {
+            console.log("data from swr", data)
+            setCoffeeStore(data[0]);
+            setVotingCount(data[0].voting)
+        }
+    }, [data])
+
     function handleUpvote() {
         console.log("HII")
         let count = votingCount + 1
         setVotingCount(count);
     }
 
-
+    if ( error ) {
+        return <div>Something went wrong retriving coffeestore page</div>
+    }
 
     return (
         <div className={styles.lay}>
