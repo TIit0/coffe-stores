@@ -130,7 +130,7 @@ export default function CoffeStore({ initialProps }) {
     }, [data]);
 
     if (router.isFallback) {
-        return <div>Loading...</div>;
+        return <div className={styles.loading}>Loading...</div>;
     }
 
     async function handleUpvote() {
