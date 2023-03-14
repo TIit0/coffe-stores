@@ -1,10 +1,11 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
-import coffeeStoreData from "../../data/coffee-stores.json"
+
 import styles from "../../styles/coffee-store.module.css"
 import Image from "next/image";
 import useSWR from 'swr';
+
 import { FetchCoffeeStores } from "@/lib/coffe-stores";
 import { useContext, useEffect, useState } from "react";
 import { StoreContext } from "@/hooks/store-context";
@@ -17,8 +18,6 @@ export async function getStaticProps(staticProps) {
 
     const params = staticProps.params;
 
-    console.log("THIS IS PARAMS", params)
-    console.log("THIS IS Static props", staticProps)
 
     const coffeeStores = await FetchCoffeeStores();
     const findCoffeStoreById = coffeeStores.find(
@@ -52,17 +51,13 @@ export async function getStaticPaths() {
 
 /* client side starts*/
 export default function CoffeStore({ initialProps }) {
-    console.log(initialProps)
 
     /* use router runs on client */
     const router = useRouter()
     const id = useRouter().query.id;
 
-    if (router.isFallback) {
-        return <div>Loading...</div>
-    }
 
-    const [coffeeStore, setCoffeeStore] = useState(initialProps)
+    const [coffeeStore, setCoffeeStore] = useState(initialProps || {})
 
     const {
         state: { coffeeStores },
@@ -91,7 +86,7 @@ export default function CoffeStore({ initialProps }) {
             });
 
             const dbCoffeeStore = await response.json();
-            console.log(dbCoffeeStore);
+
         } catch (error) {
             console.error("Error creating coffee store", error)
         }
@@ -117,26 +112,29 @@ export default function CoffeStore({ initialProps }) {
         } else {
             handleCreateCoffeStore(initialProps);
         }
-    }, [id, initialProps])
+    }, [id, initialProps, coffeeStores])
 
 
     const { name, address, locality, imgUrl } = coffeeStore;
-    console.log(id)
 
-    const [votingCount, setVotingCount] = useState(1);
+    const [votingCount, setVotingCount] = useState(0);
 
     const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher);
 
     useEffect(() => {
         if (data && data.length > 0) {
-            console.log("data from swr", data)
+
             setCoffeeStore(data[0]);
             setVotingCount(data[0].voting)
         }
-    }, [data])
+    }, [data]);
+
+    if (router.isFallback) {
+        return <div>Loading...</div>;
+    }
 
     async function handleUpvote() {
-        console.log("HII")
+
 
         try {
 
@@ -151,7 +149,7 @@ export default function CoffeStore({ initialProps }) {
             });
 
             const dbCoffeeStore = await response.json();
-            console.log({ dbCoffeeStore });
+
 
             if (dbCoffeeStore && dbCoffeeStore.length > 0) {
                 let count = votingCount + 1

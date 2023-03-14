@@ -11,7 +11,6 @@ export function reducer(state, action) {
         case ACTIONS.SET_LAT_LONG:
             return {...state, latLong: action.payload.latLong};
         case ACTIONS.SET_COFFEE_STORES:
-            console.log(action.payload.coffeeStores)
             return {...state, coffeeStores: action.payload.coffeeStores};
 
             default:

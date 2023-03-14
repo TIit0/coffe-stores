@@ -3,7 +3,7 @@ import Banner from '@/src/components/Banner/Banner'
 import Image from 'next/image'
 import styles from '@/styles/Home.module.css'
 import Card from '@/src/components/Card/Card'
-import coffeeStoresData from "../data/coffee-stores.json"
+
 import { FetchCoffeeStores } from '@/lib/coffe-stores'
 import useTrackLocation from '@/hooks/useTrackLocation'
 import { useContext, useEffect, useState } from 'react'
@@ -44,7 +44,7 @@ export default function Home({ coffeeStores }) {
 const { dispatch, state} = useContext(StoreContext);
 const {latLong} = state;
 
-console.log(state)
+
 
 
   useEffect(() => {
@@ -59,7 +59,6 @@ console.log(state)
             `/api/getCoffeeStoresByLocation?latLong=${latLong}&limit=12`
             );
             const fetchedCoffeeeStores = await response.json()
-          console.log({ fetchedCoffeeeStores, latLong })
           
           dispatch({
             type: ACTIONS.SET_COFFEE_STORES,
@@ -71,7 +70,6 @@ console.log(state)
           setUserCoffeeStoresError("");
         }
         catch (error) {
-          console.log(error);
           setUserCoffeeStoresError(error.message)
         }
       }
@@ -85,7 +83,6 @@ console.log(state)
 
 
   function handleOnBannerBtnClick() {
-    console.warn("IT WORKS")
     handleTrackLocation();
     
   }
