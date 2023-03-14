@@ -135,13 +135,34 @@ export default function CoffeStore({ initialProps }) {
         }
     }, [data])
 
-    function handleUpvote() {
+    async function handleUpvote() {
         console.log("HII")
-        let count = votingCount + 1
-        setVotingCount(count);
+
+        try {
+
+            const response = await fetch("/api/upVoteCoffeeStoreById", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id,
+                }),
+            });
+
+            const dbCoffeeStore = await response.json();
+            console.log({ dbCoffeeStore });
+
+            if (dbCoffeeStore && dbCoffeeStore.length > 0) {
+                let count = votingCount + 1
+                setVotingCount(count);
+            }
+        } catch (error) {
+            console.error("Error upvoting coffee store", error)
+        }
     }
 
-    if ( error ) {
+    if (error) {
         return <div>Something went wrong retriving coffeestore page</div>
     }
 
