@@ -167,7 +167,7 @@ const {latLong} = state;
         {coffeeStores.length > 0
           ?
           <>
-            <h2 className={styles.heading2}>San Deigo Stores</h2>
+            <h2 className={styles.heading2}>San Diego Stores</h2>
             <div className={styles.cardLayout}>
               {
                 coffeeStores.map(store => (
