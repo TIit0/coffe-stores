@@ -12,7 +12,7 @@ Change and open my mind to a new way of working
 
 2. I had to determine how much data i would have to actually save like the ratings and the coffee stores vs info i did not want to save or could get whenever it was necesssary from the user like location, applies for the last two.
 
-- airtable turned out to be very flexible and well suited for this, it has really good comumentation aswell. so it just needed  a few serverless functions one for Putting/Post and another for Getting
+- airtable turned out to be very flexible and well suited for this, it has really good documentation aswell. so it just needed  a few serverless functions one for Putting/Post and another for Getting
 
 3. The Apis
 
